@@ -13,7 +13,7 @@
 
 # Build configuration for custom golangci-lint with attgo-linter plugin.
 # Run: golangci-lint custom
-version: v2.0.0
+version: v2.8.0
 name: custom-gcl-attgo
 
 plugins:
