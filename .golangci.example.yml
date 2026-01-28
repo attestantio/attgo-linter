@@ -1,0 +1,99 @@
+# Copyright © 2026 Attestant Limited.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# ============================================================================
+# Example golangci-lint configuration for projects using attgo-linter.
+#
+# IMPORTANT: attgo-linter is a module plugin. You CANNOT use this with the
+# standard golangci-lint binary. You must:
+#
+#   1. Create .custom-gcl.yml (see below)
+#   2. Run: golangci-lint custom
+#   3. Run: ./custom-gcl run (NOT golangci-lint run)
+#
+# See README.md for full setup instructions.
+# ============================================================================
+
+version: "2"
+
+linters:
+  enable:
+    - attgo
+
+  settings:
+    custom:
+      attgo:
+        type: "module"
+        description: "Attestant organization style linter"
+        settings:
+          # ----------------------------------------------------------------
+          # HIGH PRIORITY - enabled by default
+          # These catch common issues and should generally stay enabled.
+          # ----------------------------------------------------------------
+          enable_no_pkg_logger: true    # Loggers must be struct fields
+          enable_enum_iota: true        # Enums should use iota pattern
+          enable_current_year: true     # Copyright year must be current
+
+          # ----------------------------------------------------------------
+          # MEDIUM PRIORITY - disabled by default
+          # Enable these based on your team's preferences.
+          # ----------------------------------------------------------------
+          enable_capital_comment: false # Comments should start with capital
+          enable_func_opts: false       # Services should use func options
+          enable_raw_string: false      # Prefer raw strings over escapes
+
+          # ----------------------------------------------------------------
+          # LOW PRIORITY - disabled by default
+          # These are more opinionated and may generate noise.
+          # ----------------------------------------------------------------
+          enable_struct_field_order: false  # Struct field ordering
+          enable_interface_check: false     # Interface compliance checks
+
+          # ----------------------------------------------------------------
+          # Custom patterns (optional - defaults shown)
+          # ----------------------------------------------------------------
+          # logger_type_patterns:
+          #   - "zerolog.Logger"
+          #   - "*zerolog.Logger"
+          #   - "zap.Logger"
+          #   - "*zap.Logger"
+          #   - "zap.SugaredLogger"
+          #   - "*zap.SugaredLogger"
+          #   - "logrus.Logger"
+          #   - "*logrus.Logger"
+          #   - "slog.Logger"
+          #   - "*slog.Logger"
+
+          # enum_type_suffixes:
+          #   - "Type"
+          #   - "Status"
+          #   - "State"
+          #   - "Kind"
+          #   - "Mode"
+
+# ============================================================================
+# Required companion file: .custom-gcl.yml
+#
+# Create this file alongside .golangci.yml:
+#
+#   version: v2.0.0
+#   name: custom-gcl
+#
+#   plugins:
+#     - module: "github.com/attestantio/attgo-linter"
+#       version: v0.1.0
+#
+# Then build and run:
+#   golangci-lint custom
+#   ./custom-gcl run
+# ============================================================================

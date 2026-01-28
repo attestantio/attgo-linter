@@ -1,0 +1,61 @@
+# Copyright © 2026 Attestant Limited.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# This workflow builds a custom golangci-lint binary with the attgo-linter
+# plugin compiled in, then runs it. This is required because module plugins
+# cannot be used with the standard golangci-lint binary.
+
+name: golangci-lint
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  golangci:
+    name: lint
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "^1.25"
+          cache: false
+
+      # Cache the custom binary to speed up subsequent runs
+      - name: Cache custom golangci-lint
+        id: cache-custom-gcl
+        uses: actions/cache@v4
+        with:
+          path: ./custom-gcl-attgo
+          key: custom-gcl-${{ runner.os }}-${{ hashFiles('.custom-gcl.yml', 'go.mod', 'go.sum') }}
+
+      # Install golangci-lint (needed to build custom binary)
+      - name: Install golangci-lint
+        if: steps.cache-custom-gcl.outputs.cache-hit != 'true'
+        run: go install github.com/golangci/golangci-lint/cmd/golangci-lint@v2.0.0
+
+      # Build custom binary with attgo-linter plugin
+      - name: Build custom golangci-lint
+        if: steps.cache-custom-gcl.outputs.cache-hit != 'true'
+        run: golangci-lint custom
+
+      # Run linter using the custom binary
+      - name: Run golangci-lint
+        run: ./custom-gcl-attgo run --timeout=5m
