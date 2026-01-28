@@ -12,8 +12,8 @@
 # limitations under the License.
 
 # This workflow builds a custom golangci-lint binary with the attgo-linter
-# plugin compiled in, then runs it. This is required because module plugins
-# cannot be used with the standard golangci-lint binary.
+# plugin compiled in, then runs it using golangci-lint-action for better
+# PR integration (inline annotations, only-new-issues support).
 
 name: golangci-lint
 
@@ -25,6 +25,7 @@ on:
 
 permissions:
   contents: read
+  pull-requests: read
 
 jobs:
   golangci:
@@ -56,6 +57,18 @@ jobs:
         if: steps.cache-custom-gcl.outputs.cache-hit != 'true'
         run: golangci-lint custom
 
-      # Run linter using the custom binary
-      - name: Run golangci-lint
-        run: ./custom-gcl-attgo run --timeout=5m
+      # Make custom binary available as golangci-lint in PATH
+      - name: Setup custom binary in PATH
+        run: |
+          mkdir -p "$HOME/.local/bin"
+          cp ./custom-gcl-attgo "$HOME/.local/bin/golangci-lint"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      # Run using the action with custom binary for better PR integration
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v8
+        with:
+          install-mode: "none"
+          args: "--timeout=5m"
+          only-new-issues: true
+          skip-cache: true
