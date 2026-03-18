@@ -113,7 +113,7 @@ func TestGitDefaultBranch(t *testing.T) {
 
 	branch, err := gitDefaultBranch()
 	if err != nil {
-		t.Skipf("git symbolic-ref failed (expected in CI without origin): %v", err)
+		t.Fatalf("gitDefaultBranch() failed: %v", err)
 	}
 
 	// Should be origin/main or origin/master.

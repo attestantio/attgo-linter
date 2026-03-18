@@ -65,19 +65,30 @@ func resolveChangedFiles(baseRef string) (string, map[string]fileStatus, error) 
 }
 
 // gitDefaultBranch detects the default branch of the "origin" remote.
-// It uses the local symbolic ref (set on clone) to avoid a network call.
+// It tries (in order):
+//  1. Local symbolic ref (set on full clone, no network)
+//  2. Checking if origin/main or origin/master exists locally (works in shallow/single-branch clones)
+//
 // Callers must ensure git is available (via exec.LookPath) before calling.
 func gitDefaultBranch() (string, error) {
+	// Try symbolic-ref first (works on full clones).
 	cmd := exec.Command("git", "symbolic-ref", "refs/remotes/origin/HEAD")
-	out, err := cmd.Output()
-	if err != nil {
-		return "", fmt.Errorf("git symbolic-ref failed (try 'git remote set-head origin --auto'): %w", err)
+	if out, err := cmd.Output(); err == nil {
+		ref := strings.TrimSpace(string(out))
+
+		return strings.TrimPrefix(ref, "refs/remotes/"), nil
 	}
 
-	// Output is e.g. "refs/remotes/origin/main\n".
-	ref := strings.TrimSpace(string(out))
+	// Fallback: check which common branch exists locally.
+	// This covers shallow/single-branch clones (e.g. actions/checkout).
+	for _, branch := range []string{"origin/main", "origin/master"} {
+		cmd := exec.Command("git", "rev-parse", "--verify", "--quiet", branch)
+		if err := cmd.Run(); err == nil {
+			return branch, nil
+		}
+	}
 
-	return strings.TrimPrefix(ref, "refs/remotes/"), nil
+	return "", fmt.Errorf("could not detect default branch: no origin/HEAD, origin/main, or origin/master found")
 }
 
 // gitChangedFiles returns a map of changed files relative to the given base ref.
