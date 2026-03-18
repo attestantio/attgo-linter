@@ -4,7 +4,7 @@
 
 ## Description
 
-Checks that copyright headers in new or modified Go files contain the current year. Uses git to determine which files have changed relative to a configurable base ref, so untouched files with older copyright years are not flagged.
+Checks that copyright headers in new or modified Go files contain the current year. Uses git to determine which files have changed relative to a configurable base ref (default: `auto`, which detects the remote's default branch), so untouched files with older copyright years are not flagged. Uses three-dot diff (`base...HEAD`) to compare against the merge base, so only changes on the current branch are detected.
 
 ## Behavior
 
@@ -63,16 +63,10 @@ Accurate copyright years are important for:
 ```yaml
 settings:
   enable_current_year: true
-  # Git ref to diff against. Default: "origin/main".
+  # Default: "auto" (detects the remote's default branch).
+  # Set to an explicit ref like "origin/main" or "origin/master" to override.
   # Set to "" to check all files (disables git-aware filtering).
-  current_year_base_ref: "origin/main"
-```
-
-For repositories using `master` as the default branch:
-
-```yaml
-settings:
-  current_year_base_ref: "origin/master"
+  current_year_base_ref: "auto"
 ```
 
 ## Suppression
@@ -86,7 +80,8 @@ settings:
 - This rule only checks the year in the copyright header, not the full format (use `goheader` linter for format validation)
 - Year ranges like "2023-2026" are valid if the end year is current
 - Files without copyright headers are not flagged (that's a separate concern)
-- The `current_year_base_ref` setting controls which git ref to diff against; set it to match your repository's default branch
+- The `current_year_base_ref` setting controls which git ref to diff against; `"auto"` detects the remote default branch, or set an explicit ref
+- Renamed files are treated as modified (the copyright in the new path is checked)
 
 ## Source
 

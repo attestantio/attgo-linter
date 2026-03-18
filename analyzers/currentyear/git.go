@@ -32,6 +32,7 @@ const (
 
 // resolveChangedFiles performs a single LookPath check, resolves the repo root,
 // and returns the changed files map. This avoids redundant LookPath calls.
+// If baseRef is "auto", it detects the remote default branch automatically.
 func resolveChangedFiles(baseRef string) (string, map[string]fileStatus, error) {
 	if strings.HasPrefix(baseRef, "-") {
 		return "", nil, fmt.Errorf("invalid base ref %q: must not start with '-'", baseRef)
@@ -46,6 +47,15 @@ func resolveChangedFiles(baseRef string) (string, map[string]fileStatus, error) 
 		return "", nil, fmt.Errorf("failed to get git repo root: %w", err)
 	}
 
+	if baseRef == "auto" {
+		detected, err := gitDefaultBranch()
+		if err != nil {
+			return "", nil, fmt.Errorf("failed to detect default branch: %w", err)
+		}
+
+		baseRef = detected
+	}
+
 	changedFiles, err := gitChangedFiles(baseRef)
 	if err != nil {
 		return "", nil, fmt.Errorf("failed to get git changed files: %w", err)
@@ -54,13 +64,31 @@ func resolveChangedFiles(baseRef string) (string, map[string]fileStatus, error) 
 	return repoRoot, changedFiles, nil
 }
 
+// gitDefaultBranch detects the default branch of the "origin" remote.
+// It uses the local symbolic ref (set on clone) to avoid a network call.
+// Callers must ensure git is available (via exec.LookPath) before calling.
+func gitDefaultBranch() (string, error) {
+	cmd := exec.Command("git", "symbolic-ref", "refs/remotes/origin/HEAD")
+	out, err := cmd.Output()
+	if err != nil {
+		return "", fmt.Errorf("git symbolic-ref failed (try 'git remote set-head origin --auto'): %w", err)
+	}
+
+	// Output is e.g. "refs/remotes/origin/main\n".
+	ref := strings.TrimSpace(string(out))
+
+	return strings.TrimPrefix(ref, "refs/remotes/"), nil
+}
+
 // gitChangedFiles returns a map of changed files relative to the given base ref.
+// Uses three-dot diff (merge-base) so only changes on the current branch are
+// detected, not changes that happened on the base branch since divergence.
 // The keys are git-root-relative paths and the values indicate whether the file
 // is new or modified.
 // Callers must ensure git is available (via exec.LookPath) before calling.
 func gitChangedFiles(baseRef string) (map[string]fileStatus, error) {
 	//nolint:gosec // baseRef is validated by resolveChangedFiles before reaching here.
-	cmd := exec.Command("git", "diff", "--name-status", baseRef)
+	cmd := exec.Command("git", "diff", "--name-status", baseRef+"...HEAD")
 	out, err := cmd.Output()
 	if err != nil {
 		return nil, fmt.Errorf("git diff failed: %w", err)

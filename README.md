@@ -158,7 +158,7 @@ linters:
           enable_no_pkg_logger: true
           enable_enum_iota: true
           enable_current_year: true
-          current_year_base_ref: "origin/main"  # git ref to diff against
+          current_year_base_ref: "auto"  # auto-detect, or explicit ref like "origin/main"
 
           # MEDIUM PRIORITY - disabled by default
           enable_capital_comment: false
@@ -283,7 +283,7 @@ settings:
 
 #### attgo_current_year
 
-Checks that new or modified files have the current year in their copyright header. Uses git to detect which files changed relative to a base ref (default: `origin/main`), so untouched files are not flagged.
+Checks that new or modified files have the current year in their copyright header. Uses git to detect which files changed relative to a base ref (default: `auto`, which detects the remote's default branch), so untouched files are not flagged.
 
 **Rationale:** Accurate copyright years are important for:
 - Legal compliance
@@ -308,8 +308,8 @@ Checks that new or modified files have the current year in their copyright heade
 **Configuration:**
 ```yaml
 settings:
-  # Git ref to diff against (default: "origin/main")
-  current_year_base_ref: "origin/main"
+  # Auto-detect remote default branch, or set an explicit ref like "origin/main"
+  current_year_base_ref: "auto"
 ```
 
 ---

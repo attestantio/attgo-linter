@@ -60,7 +60,7 @@ linters:
           enable_no_pkg_logger: true
           enable_enum_iota: true
           enable_current_year: true
-          current_year_base_ref: "origin/main"  # git ref to diff against
+          current_year_base_ref: "auto"  # auto-detect, or explicit ref like "origin/main"
 ```
 
 ### 3. Build the Custom Binary

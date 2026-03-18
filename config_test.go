@@ -19,8 +19,8 @@ import (
 
 func TestDefaultConfig_CurrentYearBaseRef(t *testing.T) {
 	c := DefaultConfig()
-	if c.CurrentYearBaseRef != "origin/main" {
-		t.Errorf("expected CurrentYearBaseRef to be %q, got %q", "origin/main", c.CurrentYearBaseRef)
+	if c.CurrentYearBaseRef != "auto" {
+		t.Errorf("expected CurrentYearBaseRef to be %q, got %q", "auto", c.CurrentYearBaseRef)
 	}
 }
 

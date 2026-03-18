@@ -106,6 +106,22 @@ func TestResolveFileStatus(t *testing.T) {
 	}
 }
 
+func TestGitDefaultBranch(t *testing.T) {
+	if testing.Short() {
+		t.Skip("skipping test requiring git repo in short mode")
+	}
+
+	branch, err := gitDefaultBranch()
+	if err != nil {
+		t.Skipf("git symbolic-ref failed (expected in CI without origin): %v", err)
+	}
+
+	// Should be origin/main or origin/master.
+	if branch != "origin/main" && branch != "origin/master" {
+		t.Errorf("gitDefaultBranch() = %q, want origin/main or origin/master", branch)
+	}
+}
+
 func TestResolveChangedFiles_InvalidBaseRef(t *testing.T) {
 	tests := []struct {
 		name    string

@@ -20,7 +20,7 @@ type Config struct {
 	EnableEnumIota     bool   `json:"enable_enum_iota"`
 	EnableCurrentYear  bool   `json:"enable_current_year"`
 	// CurrentYearBaseRef is the git ref to diff against for current-year checks.
-	// Default: "origin/main".
+	// Default: "auto" (detects the remote default branch).
 	CurrentYearBaseRef string `json:"current_year_base_ref"`
 
 	// MEDIUM PRIORITY - disabled by default
@@ -49,7 +49,7 @@ func DefaultConfig() *Config {
 		EnableNoPkgLogger: true,
 		EnableEnumIota:    true,
 		EnableCurrentYear:  true,
-		CurrentYearBaseRef: "origin/main",
+		CurrentYearBaseRef: "auto",
 
 		// MEDIUM PRIORITY - disabled by default
 		EnableCapitalComment: false,

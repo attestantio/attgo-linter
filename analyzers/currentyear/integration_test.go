@@ -138,22 +138,10 @@ var TestNewCurrent = true
 
 	// --- Run the analyzer functions from within the vouch repo. ---
 
-	// We need to run git commands from the vouch directory.
-	origDir, err := os.Getwd()
-	if err != nil {
-		t.Fatalf("failed to get working directory: %v", err)
-	}
+	// t.Chdir is goroutine-safe (Go 1.24+) and auto-restores on cleanup.
+	t.Chdir(vouchDir)
 
-	err = os.Chdir(vouchDir)
-	if err != nil {
-		t.Fatalf("failed to chdir to %s: %v", vouchDir, err)
-	}
-
-	t.Cleanup(func() {
-		_ = os.Chdir(origDir)
-	})
-
-	repoRoot, changedFiles, err := resolveChangedFiles("origin/master")
+	repoRoot, changedFiles, err := resolveChangedFiles("auto")
 	if err != nil {
 		t.Fatalf("resolveChangedFiles failed: %v", err)
 	}
