@@ -21,13 +21,15 @@ import (
 )
 
 // fileStatus represents the git status of a file.
-type fileStatus string
+type fileStatus uint64
 
 const (
+	// fileStatusUnchanged is the zero value: file was not changed.
+	fileStatusUnchanged fileStatus = iota
 	// fileStatusNew indicates a file was added.
-	fileStatusNew fileStatus = "new"
+	fileStatusNew
 	// fileStatusModified indicates a file was modified.
-	fileStatusModified fileStatus = "modified"
+	fileStatusModified
 )
 
 // resolveChangedFiles performs a single LookPath check, resolves the repo root,
@@ -151,15 +153,15 @@ func gitRepoRoot() (string, error) {
 
 // resolveFileStatus converts an absolute file path to a repo-relative path
 // and looks it up in the changed files map.
-// Returns the file's status, or empty string if the file is not in the map.
+// Returns the file's status, or fileStatusUnchanged if the file is not in the map.
 func resolveFileStatus(filePath string, repoRoot string, changedFiles map[string]fileStatus) fileStatus {
 	if changedFiles == nil {
-		return ""
+		return fileStatusUnchanged
 	}
 
 	rel, err := filepath.Rel(repoRoot, filePath)
 	if err != nil {
-		return ""
+		return fileStatusUnchanged
 	}
 
 	return changedFiles[rel]

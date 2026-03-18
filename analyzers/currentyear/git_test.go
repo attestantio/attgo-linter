@@ -14,6 +14,7 @@
 package currentyear
 
 import (
+	"os/exec"
 	"strings"
 	"testing"
 )
@@ -51,7 +52,7 @@ func TestResolveFileStatus(t *testing.T) {
 			changedFiles: map[string]fileStatus{
 				"pkg/foo.go": fileStatusNew,
 			},
-			expected: "",
+			expected: fileStatusUnchanged,
 		},
 		{
 			name:     "file at repo root",
@@ -67,14 +68,14 @@ func TestResolveFileStatus(t *testing.T) {
 			filePath:     "/home/user/project/pkg/foo.go",
 			repoRoot:     "/home/user/project",
 			changedFiles: map[string]fileStatus{},
-			expected:     "",
+			expected:     fileStatusUnchanged,
 		},
 		{
 			name:         "nil changed files map",
 			filePath:     "/home/user/project/pkg/foo.go",
 			repoRoot:     "/home/user/project",
 			changedFiles: nil,
-			expected:     "",
+			expected:     fileStatusUnchanged,
 		},
 		{
 			name:     "repo root with trailing slash",
@@ -109,6 +110,14 @@ func TestResolveFileStatus(t *testing.T) {
 func TestGitDefaultBranch(t *testing.T) {
 	if testing.Short() {
 		t.Skip("skipping test requiring git repo in short mode")
+	}
+
+	// In CI (actions/checkout), only the PR branch is fetched, so there may be
+	// no origin/main or origin/master ref. Skip when no remote tracking refs exist.
+	cmd := exec.Command("git", "branch", "-r")
+	out, err := cmd.Output()
+	if err != nil || !strings.Contains(string(out), "origin/") {
+		t.Skip("skipping: no remote tracking branches available")
 	}
 
 	branch, err := gitDefaultBranch()

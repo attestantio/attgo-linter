@@ -94,7 +94,7 @@ func (r *runner) run(pass *analysis.Pass) (any, error) {
 			filePath := pass.Fset.Position(file.Package).Filename
 			status := resolveFileStatus(filePath, r.repoRoot, r.changedFiles)
 
-			if status == "" {
+			if status == fileStatusUnchanged {
 				// File is unchanged; skip it.
 				continue
 			}
@@ -102,7 +102,7 @@ func (r *runner) run(pass *analysis.Pass) (any, error) {
 			checkFile(pass, file, r.currentYear, status)
 		} else {
 			// No baseRef or git not available: check all files.
-			checkFile(pass, file, r.currentYear, "")
+			checkFile(pass, file, r.currentYear, fileStatusUnchanged)
 		}
 	}
 
@@ -168,7 +168,7 @@ func checkFile(pass *analysis.Pass, file *ast.File, currentYear int, status file
 		pass.Reportf(copyrightComment.Pos(),
 			"copyright year %d is outdated; should be %d for new files",
 			lastYear, currentYear)
-	case "":
+	case fileStatusUnchanged:
 		// No baseRef or git not available: backward-compat message.
 		pass.Reportf(copyrightComment.Pos(),
 			"copyright year %d is outdated; should be %d for new or modified files",

@@ -47,8 +47,8 @@ func TestCheckFileMessages(t *testing.T) {
 			wantMsg:     "copyright year 2020 is outdated; should be 2020-2026 for modified files",
 		},
 		{
-			name:        "empty status backward compat message",
-			status:      "",
+			name:        "unchanged status backward compat message",
+			status:      fileStatusUnchanged,
 			year:        2020,
 			currentYear: 2026,
 			wantMsg:     "copyright year 2020 is outdated; should be 2026 for new or modified files",

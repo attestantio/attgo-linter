@@ -171,8 +171,8 @@ var TestNewCurrent = true
 
 	// Verify untouched file is NOT in the changed files map.
 	untouchedFile := filepath.Join(vouchDir, "main.go")
-	if got := resolveFileStatus(untouchedFile, repoRoot, changedFiles); got != "" {
-		t.Errorf("resolveFileStatus(main.go) = %q, want empty (untouched file)", got)
+	if got := resolveFileStatus(untouchedFile, repoRoot, changedFiles); got != fileStatusUnchanged {
+		t.Errorf("resolveFileStatus(main.go) = %d, want fileStatusUnchanged", got)
 	}
 
 	// --- Run checkFile on each test file and verify diagnostics. ---
