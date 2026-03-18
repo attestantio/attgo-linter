@@ -88,6 +88,9 @@ func New(settings any) (register.LinterPlugin, error) {
 			cfg.EnableInterfaceCheck = userCfg.EnableInterfaceCheck
 		}
 
+		// Merge handles non-boolean fields (strings, slices). The explicit-key
+		// block above handles booleans only, since false is indistinguishable
+		// from "unset" after unmarshal.
 		cfg.Merge(&userCfg)
 	}
 
@@ -106,7 +109,7 @@ func (p *Plugin) BuildAnalyzers() ([]*analysis.Analyzer, error) {
 		analyzers = append(analyzers, enumiota.NewAnalyzer(p.cfg.EnumTypeSuffixes))
 	}
 	if p.cfg.EnableCurrentYear {
-		analyzers = append(analyzers, currentyear.Analyzer)
+		analyzers = append(analyzers, currentyear.NewAnalyzer(p.cfg.CurrentYearBaseRef))
 	}
 
 	// MEDIUM PRIORITY (disabled by default)

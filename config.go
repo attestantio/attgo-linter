@@ -16,9 +16,12 @@ package attgolinter
 // Config holds the configuration for the attgo linter plugin.
 type Config struct {
 	// HIGH PRIORITY - enabled by default
-	EnableNoPkgLogger bool `json:"enable_no_pkg_logger"`
-	EnableEnumIota    bool `json:"enable_enum_iota"`
-	EnableCurrentYear bool `json:"enable_current_year"`
+	EnableNoPkgLogger  bool   `json:"enable_no_pkg_logger"`
+	EnableEnumIota     bool   `json:"enable_enum_iota"`
+	EnableCurrentYear  bool   `json:"enable_current_year"`
+	// CurrentYearBaseRef is the git ref to diff against for current-year checks.
+	// Default: "origin/main".
+	CurrentYearBaseRef string `json:"current_year_base_ref"`
 
 	// MEDIUM PRIORITY - disabled by default
 	EnableCapitalComment bool `json:"enable_capital_comment"`
@@ -45,7 +48,8 @@ func DefaultConfig() *Config {
 		// HIGH PRIORITY - enabled by default
 		EnableNoPkgLogger: true,
 		EnableEnumIota:    true,
-		EnableCurrentYear: true,
+		EnableCurrentYear:  true,
+		CurrentYearBaseRef: "origin/main",
 
 		// MEDIUM PRIORITY - disabled by default
 		EnableCapitalComment: false,
@@ -95,6 +99,10 @@ func (c *Config) Merge(other *Config) {
 	// The golangci-lint plugin system passes only explicitly set values,
 	// so we check if the value differs from what would be "unset".
 	// This is handled by the plugin initialization.
+
+	if other.CurrentYearBaseRef != "" {
+		c.CurrentYearBaseRef = other.CurrentYearBaseRef
+	}
 
 	if len(other.LoggerTypePatterns) > 0 {
 		c.LoggerTypePatterns = other.LoggerTypePatterns

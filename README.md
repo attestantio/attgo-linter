@@ -158,6 +158,7 @@ linters:
           enable_no_pkg_logger: true
           enable_enum_iota: true
           enable_current_year: true
+          current_year_base_ref: "origin/main"  # git ref to diff against
 
           # MEDIUM PRIORITY - disabled by default
           enable_capital_comment: false
@@ -282,26 +283,33 @@ settings:
 
 #### attgo_current_year
 
-New files must have the current year in their copyright header.
+Checks that new or modified files have the current year in their copyright header. Uses git to detect which files changed relative to a base ref (default: `origin/main`), so untouched files are not flagged.
 
 **Rationale:** Accurate copyright years are important for:
 - Legal compliance
 - Indicating when code was created/modified
 - Consistency across the codebase
 
-**Bad (in 2026):**
+**New file — Bad (in 2026):**
 ```go
 // Copyright © 2025 Attestant Limited.
 ```
 
-**Good:**
+**New file — Good:**
 ```go
 // Copyright © 2026 Attestant Limited.
 ```
 
-**Also acceptable (year ranges):**
+**Modified file — Good (year range):**
 ```go
 // Copyright © 2023-2026 Attestant Limited.
+```
+
+**Configuration:**
+```yaml
+settings:
+  # Git ref to diff against (default: "origin/main")
+  current_year_base_ref: "origin/main"
 ```
 
 ---
