@@ -4,7 +4,14 @@
 
 ## Description
 
-Checks that copyright headers in Go files contain the current year.
+Checks that copyright headers in new or modified Go files contain the current year. Uses git to determine which files have changed relative to a configurable base ref (default: `auto`, which detects the remote's default branch), so untouched files with older copyright years are not flagged. Uses three-dot diff (`base...HEAD`) to compare against the merge base, so only changes on the current branch are detected.
+
+## Behavior
+
+- **New files** (added in git): must have the current year. Flags with a message suggesting the current year.
+- **Modified files** (changed in git): must have the current year as the end of a range. Flags with a message suggesting `<original year>-<current year>`.
+- **Unchanged files**: not checked — old copyright years are fine if the file was not touched.
+- **Git unavailable**: falls back to checking all files (backward compatible).
 
 ## Rationale
 
@@ -16,25 +23,39 @@ Accurate copyright years are important for:
 
 ## Examples
 
-### Bad (in 2025)
+### New file — Bad
 
 ```go
 // Copyright © 2023 Attestant Limited.
 // Licensed under the Apache License, Version 2.0
 ```
 
-### Good
+### New file — Good
 
 ```go
-// Copyright © 2025 Attestant Limited.
+// Copyright © 2026 Attestant Limited.
 // Licensed under the Apache License, Version 2.0
 ```
 
-### Also Acceptable (year ranges)
+### Modified file — Bad
 
 ```go
-// Copyright © 2023-2025 Attestant Limited.
+// Copyright © 2023 Attestant Limited.
 // Licensed under the Apache License, Version 2.0
+```
+
+### Modified file — Good
+
+```go
+// Copyright © 2023-2026 Attestant Limited.
+// Licensed under the Apache License, Version 2.0
+```
+
+### Untouched file — Not flagged
+
+```go
+// Copyright © 2020 Attestant Limited.
+// (file has not been modified — this is fine)
 ```
 
 ## Configuration
@@ -42,6 +63,10 @@ Accurate copyright years are important for:
 ```yaml
 settings:
   enable_current_year: true
+  # Default: "auto" (detects the remote's default branch).
+  # Set to an explicit ref like "origin/main" or "origin/master" to override.
+  # Set to "" to check all files (disables git-aware filtering).
+  current_year_base_ref: "auto"
 ```
 
 ## Suppression
@@ -53,8 +78,10 @@ settings:
 ## Notes
 
 - This rule only checks the year in the copyright header, not the full format (use `goheader` linter for format validation)
-- Year ranges like "2023-2025" are valid if the end year is current
+- Year ranges like "2023-2026" are valid if the end year is current
 - Files without copyright headers are not flagged (that's a separate concern)
+- The `current_year_base_ref` setting controls which git ref to diff against; `"auto"` detects the remote default branch, or set an explicit ref
+- Renamed files are treated as modified (the copyright in the new path is checked)
 
 ## Source
 

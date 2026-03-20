@@ -1,4 +1,4 @@
-// Copyright © 2020 Attestant Limited. // want `copyright year 2020 is outdated`
+// Copyright © 2020 Attestant Limited. // want `copyright year 2020 is outdated; should be \d+ for new or modified files`
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 

@@ -25,5 +25,5 @@ func TestAnalyzer(t *testing.T) {
 
 	// Note: This test may need adjustment depending on the current year.
 	// Test fixtures use 2020 as an outdated year which should always be flagged.
-	analysistest.Run(t, testdata, currentyear.Analyzer, "currentyear")
+	analysistest.Run(t, testdata, currentyear.NewAnalyzer(""), "currentyear")
 }
