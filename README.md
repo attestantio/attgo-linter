@@ -455,15 +455,48 @@ func (r *MyReader) Read(p []byte) (int, error) {
 
 ---
 
+## Linter Names
+
+golangci-lint reports each issue under the name of the plugin that produced it. That name is what `linters.enable` and `//nolint` match.
+
+The rules you turn on with `enable_*` settings are settings of one plugin, `attgo`. Everything they report is named `attgo`, so a directive cannot tell them apart. Their `attgo_*` names are rule names, not linter names.
+
+A rule can instead register as a plugin of its own, named after the rule. It has no `enable_*` setting: add a `linters.settings.custom` entry named after the rule, with no `settings`, and list the same name under `linters.enable`. The plugin ships in the same module, so `.custom-gcl.yml` needs no extra entry. It needs an attgo-linter `version` that includes the rule.
+
+```yaml
+linters:
+  enable:
+    - attgo
+    - <rule_name>
+
+  settings:
+    custom:
+      <rule_name>:
+        type: "module"
+        description: "What the rule checks"
+```
+
+The `enable_*` rules will move to their own names in a later release.
+
 ## Disabling Rules
 
-Use standard golangci-lint nolint directives:
+Use standard golangci-lint nolint directives. A directive names a linter, not a rule.
+
+The rules turned on with `enable_*` settings all report as `attgo`, so one directive silences every `attgo` rule on its line:
 
 ```go
-var log zerolog.Logger //nolint:attgo_no_pkg_logger // legacy code
+var log zerolog.Logger //nolint:attgo // legacy code
 
-query := "escaped\"string" //nolint:attgo_raw_string // intentional
+query := "escaped\"string" //nolint:attgo // intentional
 ```
+
+A rule registered under its own name is silenced by that name alone, and every other linter keeps reporting on the line:
+
+```go
+value := compute() //nolint:<rule_name> // reason
+```
+
+A rule name such as `//nolint:attgo_no_pkg_logger` does nothing for the `enable_*` rules. golangci-lint warns `Found unknown linters in //nolint directives`.
 
 ## Troubleshooting
 
