@@ -71,8 +71,11 @@ settings:
 
 ## Suppression
 
+The directive names the linter, `attgo`, not the rule, so it silences every `attgo` rule on the comment. Put it on its own line in the same comment: golangci-lint ignores a directive in the middle of another comment line. See [Linter Names](../../README.md#linter-names).
+
 ```go
-// Copyright © 2020 Attestant Limited. //nolint:attgo_current_year
+// Copyright © 2020 Attestant Limited.
+//nolint:attgo
 ```
 
 ## Notes

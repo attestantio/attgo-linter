@@ -80,8 +80,11 @@ Fields are categorized by name and type:
 
 ## Suppression
 
+The directive names the linter, `attgo`, not the rule, so it silences every `attgo` rule on the struct. Put it on its own line above the declaration, so that it covers every field. See [Linter Names](../../README.md#linter-names).
+
 ```go
-type Service struct { //nolint:attgo_struct_field_order
+//nolint:attgo
+type Service struct {
     // Custom ordering for specific reason
     mu  sync.Mutex
     log zerolog.Logger

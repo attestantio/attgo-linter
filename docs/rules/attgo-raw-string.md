@@ -70,8 +70,10 @@ The rule triggers when:
 
 ## Suppression
 
+The directive names the linter, `attgo`, not the rule, so it silences every `attgo` rule on its line. See [Linter Names](../../README.md#linter-names).
+
 ```go
-query := "intentionally \"escaped\"" //nolint:attgo_raw_string
+query := "{\"key\": \"value\"}" //nolint:attgo
 ```
 
 ## Source

@@ -81,11 +81,13 @@ settings:
 
 ## Suppression
 
+The directive names the linter, `attgo`, not the rule, so it silences every `attgo` rule on its line. See [Linter Names](../../README.md#linter-names).
+
 ```go
 type Color string
 
 const (
-    ColorRed Color = "red" //nolint:attgo_enum_iota // intentionally string-based
+    ColorRed Color = "red" //nolint:attgo // intentionally string-based
 )
 ```
 
