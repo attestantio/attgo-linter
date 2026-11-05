@@ -459,9 +459,9 @@ func (r *MyReader) Read(p []byte) (int, error) {
 
 golangci-lint reports each issue under the name of the plugin that produced it. That name is what `linters.enable` and `//nolint` match.
 
-The rules you turn on with `enable_*` settings are settings of one plugin, `attgo`. Everything they report is named `attgo`, so a directive cannot tell them apart. Their `attgo_*` names are rule names, not linter names.
+The `enable_*` rules are analyzers of one plugin, `attgo`. Everything they report is named `attgo`, so a directive cannot tell them apart. Their `attgo_*` names are rule names, not linter names.
 
-A rule can instead register as a plugin of its own, named after the rule. It has no `enable_*` setting: add a `linters.settings.custom` entry named after the rule, with no `settings`, and list the same name under `linters.enable`. The plugin ships in the same module, so `.custom-gcl.yml` needs no extra entry. It needs an attgo-linter `version` that includes the rule.
+A rule can instead register as a plugin of its own, named after the rule. It has no `enable_*` setting: add a `linters.settings.custom` entry named after the rule, with no `settings`. When the config sets `linters.default` to `none` or `fast`, also list the same name under `linters.enable`. The rule registers from `init` in the root package, which the attgo-linter entry of `.custom-gcl.yml` already imports, so that file needs no extra entry. It needs an attgo-linter `version` that includes the rule.
 
 ```yaml
 linters:
@@ -482,12 +482,12 @@ The `enable_*` rules will move to their own names in a later release.
 
 Use standard golangci-lint nolint directives. A directive names a linter, not a rule.
 
-The rules turned on with `enable_*` settings all report as `attgo`, so one directive silences every `attgo` rule on its line:
+The `enable_*` rules all report as `attgo`, so one directive silences every `attgo` rule on its line:
 
 ```go
 var log zerolog.Logger //nolint:attgo // legacy code
 
-query := "escaped\"string" //nolint:attgo // intentional
+query := "{\"key\": \"value\"}" //nolint:attgo // intentional
 ```
 
 A rule registered under its own name is silenced by that name alone, and every other linter keeps reporting on the line:

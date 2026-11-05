@@ -109,10 +109,11 @@ func init() {
 }
 ```
 
-That is all the code. There is no `Config` field and no `enable_*` setting. A repository turns the rule on by adding a `linters.settings.custom` entry named after the analyzer, and listing the name under `linters.enable`:
+That is all the code. There is no `Config` field and no `enable_*` setting. A repository turns the rule on by adding a `linters.settings.custom` entry named after the analyzer. A config that sets `linters.default` to `none` or `fast` must also list the name under `linters.enable`, as here:
 
 ```yaml
 linters:
+  default: none
   enable:
     - attgo_new_rule
 
@@ -123,11 +124,11 @@ linters:
         description: "What the rule checks"
 ```
 
-The entry takes no `settings`; `RegisterAnalyzer` rejects any. The plugin ships in the same module, so a consumer's `.custom-gcl.yml` needs no extra entry, only an attgo-linter `version` that includes the rule.
+The entry takes no `settings`; `RegisterAnalyzer` rejects any. The rule registers from `init` in the root package, which a consumer's attgo-linter entry in `.custom-gcl.yml` already imports, so that file needs no extra entry, only a `version` that includes the rule.
 
 The rule is then suppressed with `//nolint:attgo_new_rule`, which leaves every other linter reporting on that line.
 
-The rules that predate this are settings of the `attgo` plugin (`Config`, `New` and `BuildAnalyzers`) and stay there until they move to their own names. Do not add new rules there.
+The `enable_*` rules predate this. The `attgo` plugin builds them (`Config`, `New` and `BuildAnalyzers`), and they stay there until they move to their own names. Do not add new rules there.
 
 An analyzer value belongs to one plugin. golangci-lint maps each analyzer value to one linter name, so when the `attgo` plugin and a per-name plugin both return the same value, its issues report under only one of the two names, and `//nolint:attgo` stops matching them. Moving an existing rule to its own name means removing it from the `attgo` plugin in the same change.
 

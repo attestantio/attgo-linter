@@ -27,9 +27,10 @@ import (
 // alone.
 //
 // Call it from an init function. A repository opts in by adding a
-// linters.settings.custom entry named analyzer.Name, which takes no settings.
-// The name must be lowercase, because golangci-lint lowercases the names in
-// //nolint directives.
+// linters.settings.custom entry named analyzer.Name, which takes no settings,
+// and, when it sets linters.default to none or fast, by listing the name under
+// linters.enable. The name must be lowercase, because golangci-lint lowercases
+// the names in //nolint directives.
 //
 // An analyzer value belongs to one plugin. golangci-lint maps each analyzer
 // value to one linter name, so a value that the attgo plugin also builds

@@ -24,7 +24,7 @@ analyzers/{rulename}/
 └── analyzer_test.go
 ```
 
-The analyzer name must use underscores (not hyphens): `attgo_{rule_name}`
+The analyzer name is also the linter name. Use lowercase with underscores (not hyphens): `attgo_{rule_name}`
 
 ### 3. Create Test Fixtures
 
@@ -41,13 +41,15 @@ Update `plugin.go`:
 - Add import
 - Call `RegisterAnalyzer({rulename}.Analyzer)` in `init()`
 
-Do not add a `Config` field, a default or an `enable_*` setting: a repository enables the rule with a `linters.settings.custom` entry named after the analyzer, and `RegisterAnalyzer` rejects any settings. See `MAINTENANCE.md`, step 5.
+Do not add a `Config` field, a default or an `enable_*` setting: a repository enables the rule with a `linters.settings.custom` entry named after the analyzer (plus a `linters.enable` entry when its config sets `linters.default` to `none` or `fast`), and `RegisterAnalyzer` rejects any settings. See `MAINTENANCE.md`, step 5.
 
 ### 5. Update Documentation
 
 - Add rule section to `README.md`
 - Create `docs/rules/attgo-{rule-name}.md`
 - Update `CHANGELOG.md`
+
+The rule has no priority and no `enable_*` setting. Document its `linters.settings.custom` entry and its `//nolint:attgo_{rule_name}` directive instead.
 
 ### 6. Verify
 
