@@ -66,6 +66,8 @@ func TestRegisterAnalyzer_Settings(t *testing.T) {
 		name     string
 		settings any
 		wantErr  string
+		// wantCause is the rejected setting that the wrapped error names.
+		wantCause string
 	}{
 		{
 			name:     "no settings",
@@ -76,9 +78,10 @@ func TestRegisterAnalyzer_Settings(t *testing.T) {
 			settings: map[string]any{},
 		},
 		{
-			name:     "enable flag",
-			settings: map[string]any{"enable": false},
-			wantErr:  `attgo_registered_settings takes no settings`,
+			name:      "enable flag",
+			settings:  map[string]any{"enable": false},
+			wantErr:   `attgo_registered_settings takes no settings`,
+			wantCause: `enable`,
 		},
 	}
 
@@ -109,9 +112,8 @@ func TestRegisterAnalyzer_Settings(t *testing.T) {
 				t.Errorf("error = %q, want it to contain %q", err.Error(), tt.wantErr)
 			}
 
-			// The cause names the rejected key.
-			if !strings.Contains(err.Error(), `"enable"`) {
-				t.Errorf("error = %q, want it to name the rejected setting", err.Error())
+			if !strings.Contains(err.Error(), tt.wantCause) {
+				t.Errorf("error = %q, want it to name the rejected setting %q", err.Error(), tt.wantCause)
 			}
 
 			if errors.Unwrap(err) == nil {
