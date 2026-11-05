@@ -84,10 +84,10 @@ settings:
 The directive names the linter, `attgo`, not the rule, so it silences every `attgo` rule on its line. See [Linter Names](../../README.md#linter-names).
 
 ```go
-type Color string
+type SANType string
 
 const (
-    ColorRed Color = "red" //nolint:attgo // intentionally string-based
+    SANTypeDNS SANType = "dns" //nolint:attgo // intentionally string-based
 )
 ```
 
