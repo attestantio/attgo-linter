@@ -30,7 +30,8 @@ import (
 // the attgo plugin, and checks which linters still report once a //nolint
 // directive names one of them. It lints with the attgo settings of each
 // consumer (vouch and dirk share theirs), so it also checks that those
-// configurations keep working next to per-name plugins.
+// settings still apply next to per-name plugins: vouch turns
+// attgo_capital_comment on and go-eth2-client turns it off.
 func TestIntegration_PerNameNolint(t *testing.T) {
 	if testing.Short() {
 		t.Skip("skipping custom binary build in short mode")
@@ -120,9 +121,18 @@ plugins:
 		},
 	}
 
-	for _, config := range []string{"vouch.yml", "go-eth2-client.yml"} {
-		t.Run(config, func(t *testing.T) {
-			lintersByLine := runLint(t, filepath.Join(work, "custom-gcl"), project, config)
+	configs := []struct {
+		file string
+		// The linters that report the lowercase comment of project.go.
+		lowercase []string
+	}{
+		{file: "vouch.yml", lowercase: []string{"attgo"}},
+		{file: "go-eth2-client.yml"},
+	}
+
+	for _, config := range configs {
+		t.Run(config.file, func(t *testing.T) {
+			lintersByLine := runLint(t, filepath.Join(work, "custom-gcl"), project, config.file)
 
 			for _, tt := range tests {
 				t.Run(tt.name, func(t *testing.T) {
@@ -139,6 +149,23 @@ plugins:
 					}
 				})
 			}
+
+			t.Run("the attgo settings of the config still apply", func(t *testing.T) {
+				line, found := lineOf["capitalComment"]
+				if !found {
+					t.Fatal("variable capitalComment not found in project.go")
+				}
+
+				// The finding is on the comment, the line above the variable.
+				line--
+
+				got := lintersByLine[line]
+				slices.Sort(got)
+
+				if !slices.Equal(got, config.lowercase) {
+					t.Errorf("linters reporting the lowercase comment on line %d = %v, want %v", line, got, config.lowercase)
+				}
+			})
 		})
 	}
 }

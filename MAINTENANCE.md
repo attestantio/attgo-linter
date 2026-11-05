@@ -163,7 +163,7 @@ go test -v ./analyzers/newrule/...
 
 ### Per-Name Registration
 
-`TestIntegration_PerNameNolint` builds a custom golangci-lint binary from the checkout, the way a consumer does, and runs it over `testdata/project`. Two sample analyzers from `testdata/sampleplugin` register under their own names next to the `attgo` plugin. The test checks that a `//nolint` directive naming one of them silences only that one. It runs once with the `attgo` settings of vouch (`vouch.yml`, the same as dirk's) and once with those of go-eth2-client (`go-eth2-client.yml`), so those configurations keep working next to per-name plugins.
+`TestIntegration_PerNameNolint` builds a custom golangci-lint binary from the checkout, the way a consumer does, and runs it over `testdata/project`. Two sample analyzers from `testdata/sampleplugin` register under their own names next to the `attgo` plugin. The test checks that a `//nolint` directive naming one of them silences only that one. It runs once with the `attgo` settings of vouch (`vouch.yml`, the same as dirk's) and once with those of go-eth2-client (`go-eth2-client.yml`). A lowercase comment in `testdata/project` is reported under the first and not under the second, because go-eth2-client turns `enable_capital_comment` off, so the test also shows that those settings still apply next to per-name plugins.
 
 The test builds the golangci-lint version of `.custom-gcl.yml`. It needs `golangci-lint`, `git` and network access on the machine, takes about a minute, and `-short` skips it. When `CI` is set and `golangci-lint` is missing, it fails instead of skipping. Run it with `-count=1`, because `go test` does not see an edit to `testdata/sampleplugin` and would report a cached pass:
 
