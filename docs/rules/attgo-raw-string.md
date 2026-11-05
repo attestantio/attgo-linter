@@ -76,4 +76,5 @@ query := "intentionally \"escaped\"" //nolint:attgo_raw_string
 
 ## Source
 
-- [attestant PR #722](https://github.com/attestantio/attestant/pull/722)
+- [go-eth2-client `api/v1/validatorstate.go`](https://github.com/attestantio/go-eth2-client/blob/6d6c8310d52ef56f6382065a338a2e0bc34e5d39/api/v1/validatorstate.go#L78-L96) and [vouch `services/blockrelay/configversion.go`](https://github.com/attestantio/vouch/blob/83758284525e3abb5bf46a1680a944020dbf831f/services/blockrelay/configversion.go#L45-L47) use raw strings for quoted text
+- Enabled in [vouch](https://github.com/attestantio/vouch/blob/83758284525e3abb5bf46a1680a944020dbf831f/.golangci.yml#L207), [go-eth2-client](https://github.com/attestantio/go-eth2-client/blob/6d6c8310d52ef56f6382065a338a2e0bc34e5d39/.golangci.yml#L163) and [dirk](https://github.com/attestantio/dirk/blob/0e84fe34850ce9f9acd37069dcf8fc5522e309d3/.golangci.yml#L208)

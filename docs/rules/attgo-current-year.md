@@ -85,4 +85,7 @@ settings:
 
 ## Source
 
-- [attestant PR #719](https://github.com/attestantio/attestant/pull/719)
+Public pull requests that bring touched files up to date, as this rule requires:
+
+- [vouch PR #421](https://github.com/attestantio/vouch/pull/421)
+- [go-eth2-client PR #307](https://github.com/attestantio/go-eth2-client/pull/307)
