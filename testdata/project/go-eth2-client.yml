@@ -12,7 +12,8 @@
 # limitations under the License.
 
 # The attgo settings of go-eth2-client's .golangci.yml, unchanged, next to two
-# analyzers registered under their own names (one entry each, no settings).
+# analyzers registered under their own names (one entry each, no settings). The default
+# is none, so that only these three linters report.
 version: "2"
 
 linters:
