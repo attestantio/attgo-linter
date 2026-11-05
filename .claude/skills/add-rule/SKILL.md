@@ -11,10 +11,8 @@ When asked to add a new linter rule, follow these steps:
 Ask the user for:
 - **Rule name**: e.g., "no-global-vars"
 - **Description**: What the rule checks
-- **Priority**: HIGH (enabled by default), MEDIUM, or LOW (disabled by default)
 - **Bad example**: Code that should trigger the warning
 - **Good example**: Code that passes the check
-- **Configuration options**: Any customizable settings
 
 ### 2. Create Analyzer Package
 
@@ -37,18 +35,13 @@ analyzers/{rulename}/testdata/src/{rulename}/
 
 Use `// want \`regex pattern\`` comments for expected diagnostics.
 
-### 4. Register in Plugin
+### 4. Register Under Its Own Name
 
 Update `plugin.go`:
 - Add import
-- Add to `BuildAnalyzers()` with config check
+- Call `RegisterAnalyzer({rulename}.Analyzer)` in `init()`
 
-Update `config.go`:
-- Add `Enable{RuleName}` field to `Config` struct
-- Set default in `DefaultConfig()`
-
-Update `plugin.go` config handling:
-- Add explicit check for the setting in `New()`
+Do not add a `Config` field, a default or an `enable_*` setting: a repository enables the rule with a `linters.settings.custom` entry named after the analyzer, and `RegisterAnalyzer` rejects any settings. See `MAINTENANCE.md`, step 5.
 
 ### 5. Update Documentation
 
@@ -147,10 +140,7 @@ var good = something // No warning
 - [ ] Created `analyzers/{rulename}/analyzer_test.go`
 - [ ] Created `analyzers/{rulename}/testdata/src/{rulename}/{rulename}.go`
 - [ ] Added import to `plugin.go`
-- [ ] Added to `BuildAnalyzers()` in `plugin.go`
-- [ ] Added config field to `config.go`
-- [ ] Added default value in `DefaultConfig()`
-- [ ] Added config handling in `New()`
+- [ ] Called `RegisterAnalyzer` in `init()` in `plugin.go`
 - [ ] Tests pass: `go test ./...`
 - [ ] Added documentation to `README.md`
 - [ ] Updated `CHANGELOG.md`
