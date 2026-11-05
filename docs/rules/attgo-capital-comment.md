@@ -58,11 +58,11 @@ settings:
 
 ## Suppression
 
-The directive names the linter, `attgo`, not the rule, so it silences every `attgo` rule on the comment. Put it on its own line directly above the comment: golangci-lint ignores a directive in the middle of another comment. See [Linter Names](../../README.md#linter-names).
+The directive names the linter, `attgo`, not the rule, so it silences every `attgo` rule on the comment. Put it on its own line below the comment text, in the same comment block. On a doc comment it also covers the declaration. See [Linter Names](../../README.md#linter-names).
 
 ```go
-//nolint:attgo
 // this is intentionally lowercase
+//nolint:attgo
 ```
 
 ## Notes
