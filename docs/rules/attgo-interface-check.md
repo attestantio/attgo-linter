@@ -69,8 +69,10 @@ The rule:
 
 ## Suppression
 
+The directive names the linter, `attgo`, not the rule, so it silences every `attgo` rule on its line. See [Linter Names](../../README.md#linter-names).
+
 ```go
-type MyReader struct{} //nolint:attgo_interface_check
+type MyReader struct{} //nolint:attgo
 ```
 
 ## Notes

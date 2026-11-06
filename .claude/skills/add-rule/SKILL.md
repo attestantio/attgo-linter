@@ -11,10 +11,8 @@ When asked to add a new linter rule, follow these steps:
 Ask the user for:
 - **Rule name**: e.g., "no-global-vars"
 - **Description**: What the rule checks
-- **Priority**: HIGH (enabled by default), MEDIUM, or LOW (disabled by default)
 - **Bad example**: Code that should trigger the warning
 - **Good example**: Code that passes the check
-- **Configuration options**: Any customizable settings
 
 ### 2. Create Analyzer Package
 
@@ -26,7 +24,7 @@ analyzers/{rulename}/
 └── analyzer_test.go
 ```
 
-The analyzer name must use underscores (not hyphens): `attgo_{rule_name}`
+The analyzer name is also the linter name. Use lowercase with underscores (not hyphens): `attgo_{rule_name}`
 
 ### 3. Create Test Fixtures
 
@@ -37,24 +35,21 @@ analyzers/{rulename}/testdata/src/{rulename}/
 
 Use `// want \`regex pattern\`` comments for expected diagnostics.
 
-### 4. Register in Plugin
+### 4. Register Under Its Own Name
 
 Update `plugin.go`:
-- Add import
-- Add to `BuildAnalyzers()` with config check
+- Add imports of the rule package and of `internal/pername`
+- Call `pername.Register({rulename}.Analyzer)` in `init()`
 
-Update `config.go`:
-- Add `Enable{RuleName}` field to `Config` struct
-- Set default in `DefaultConfig()`
-
-Update `plugin.go` config handling:
-- Add explicit check for the setting in `New()`
+Do not add a `Config` field, a default or an `enable_*` setting: a repository enables the rule with a `linters.settings.custom` entry named after the analyzer (plus a `linters.enable` entry when its config sets `linters.default` to `none` or `fast`), and `pername.Register` rejects any settings. See `MAINTENANCE.md`, step 5.
 
 ### 5. Update Documentation
 
 - Add rule section to `README.md`
 - Create `docs/rules/attgo-{rule-name}.md`
 - Update `CHANGELOG.md`
+
+The rule has no priority and no `enable_*` setting. Document its `linters.settings.custom` entry and its `//nolint:attgo_{rule_name}` directive instead.
 
 ### 6. Verify
 
@@ -147,10 +142,7 @@ var good = something // No warning
 - [ ] Created `analyzers/{rulename}/analyzer_test.go`
 - [ ] Created `analyzers/{rulename}/testdata/src/{rulename}/{rulename}.go`
 - [ ] Added import to `plugin.go`
-- [ ] Added to `BuildAnalyzers()` in `plugin.go`
-- [ ] Added config field to `config.go`
-- [ ] Added default value in `DefaultConfig()`
-- [ ] Added config handling in `New()`
+- [ ] Called `pername.Register` in `init()` in `plugin.go`
 - [ ] Tests pass: `go test ./...`
 - [ ] Added documentation to `README.md`
 - [ ] Updated `CHANGELOG.md`

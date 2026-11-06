@@ -71,8 +71,11 @@ settings:
 
 ## Suppression
 
+The directive names the linter, `attgo`, not the rule, so it silences every `attgo` rule on the comment. Put it on its own line in the same comment: golangci-lint ignores a directive in the middle of another comment line. See [Linter Names](../../README.md#linter-names).
+
 ```go
-// Copyright © 2020 Attestant Limited. //nolint:attgo_current_year
+// Copyright © 2020 Attestant Limited.
+//nolint:attgo
 ```
 
 ## Notes
@@ -85,4 +88,7 @@ settings:
 
 ## Source
 
-- [attestant PR #719](https://github.com/attestantio/attestant/pull/719)
+Public pull requests that bring touched files up to date, as this rule requires:
+
+- [vouch PR #421](https://github.com/attestantio/vouch/pull/421)
+- [go-eth2-client PR #307](https://github.com/attestantio/go-eth2-client/pull/307)

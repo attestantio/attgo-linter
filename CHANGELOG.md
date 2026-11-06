@@ -2,7 +2,14 @@
 
 ## dev
 
-- (work in progress)
+### Added
+
+- A rule can register as a golangci-lint plugin of its own, named after its analyzer. A repository enables it with a `linters.settings.custom` entry of that name, with no `settings` (plus a `linters.enable` entry when it sets `linters.default` to `none` or `fast`), and suppresses it with `//nolint:<name>`, which leaves every other linter reporting. The existing rules stay in the `attgo` plugin, and existing `attgo` configurations need no change.
+
+### Fixed
+
+- README: `//nolint:attgo_no_pkg_logger` and `//nolint:attgo_raw_string` suppressed nothing, because golangci-lint reports every rule of the plugin under the linter name `attgo`. The examples now use `//nolint:attgo`.
+- `docs/rules`: the suppression examples use `//nolint:attgo`, and each now holds a violation that its rule reports and the directive silences. The source links of `attgo_current_year` and `attgo_raw_string` point to public repositories.
 
 ## v0.1.0
 

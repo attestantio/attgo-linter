@@ -71,8 +71,10 @@ settings:
 
 ## Suppression
 
+The directive names the linter, `attgo`, not the rule, so it silences every `attgo` rule on its line. See [Linter Names](../../README.md#linter-names).
+
 ```go
-var log zerolog.Logger //nolint:attgo_no_pkg_logger // legacy code, will refactor
+var log zerolog.Logger //nolint:attgo // legacy code, will refactor
 ```
 
 ## Source

@@ -1,0 +1,49 @@
+# Copyright © 2026 Attestant Limited.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# The attgo settings of vouch's .golangci.yml, which dirk shares, unchanged, next to two
+# analyzers registered under their own names (one entry each, no settings). The default
+# is none, so that only these three linters report.
+version: "2"
+
+linters:
+  default: none
+  enable:
+    - attgo
+    - sample_first
+    - sample_second
+
+  settings:
+    custom:
+      attgo:
+        type: "module"
+        description: "Attestant organization style linter"
+        settings:
+          # HIGH PRIORITY
+          enable_no_pkg_logger: true
+          enable_enum_iota: true
+          enable_current_year: true
+          # MEDIUM PRIORITY
+          enable_capital_comment: true
+          enable_func_opts: true
+          enable_raw_string: true
+          # LOW PRIORITY
+          enable_struct_field_order: true
+          enable_interface_check: true
+
+      sample_first:
+        type: "module"
+        description: "Sample analyzer registered under its own name"
+      sample_second:
+        type: "module"
+        description: "Second sample analyzer registered under its own name"
