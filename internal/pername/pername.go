@@ -11,7 +11,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package attgolinter
+// Package pername registers analyzers as golangci-lint module plugins named
+// after them.
+package pername
 
 import (
 	"fmt"
@@ -20,9 +22,9 @@ import (
 	"golang.org/x/tools/go/analysis"
 )
 
-// RegisterAnalyzer registers analyzer as a golangci-lint module plugin named
-// after it. golangci-lint reports every analyzer of a plugin under the plugin's
-// name, so //nolint:attgo silences all attgo rules. A plugin of its own lets a
+// Register registers analyzer as a golangci-lint module plugin named after it.
+// golangci-lint reports every analyzer of a plugin under the plugin's name, so
+// //nolint:attgo silences all attgo rules. A plugin of its own lets a
 // repository enable the analyzer, and //nolint:<analyzer.Name> silence it,
 // alone.
 //
@@ -35,7 +37,7 @@ import (
 // An analyzer value belongs to one plugin. golangci-lint maps each analyzer
 // value to one linter name, so a value that the attgo plugin also builds
 // reports under only one of the two names when both are enabled.
-func RegisterAnalyzer(analyzer *analysis.Analyzer) {
+func Register(analyzer *analysis.Analyzer) {
 	register.Plugin(analyzer.Name, func(settings any) (register.LinterPlugin, error) {
 		_, err := register.DecodeSettings[struct{}](settings)
 		if err != nil {

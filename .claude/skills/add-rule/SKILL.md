@@ -38,10 +38,10 @@ Use `// want \`regex pattern\`` comments for expected diagnostics.
 ### 4. Register Under Its Own Name
 
 Update `plugin.go`:
-- Add import
-- Call `RegisterAnalyzer({rulename}.Analyzer)` in `init()`
+- Add imports of the rule package and of `internal/pername`
+- Call `pername.Register({rulename}.Analyzer)` in `init()`
 
-Do not add a `Config` field, a default or an `enable_*` setting: a repository enables the rule with a `linters.settings.custom` entry named after the analyzer (plus a `linters.enable` entry when its config sets `linters.default` to `none` or `fast`), and `RegisterAnalyzer` rejects any settings. See `MAINTENANCE.md`, step 5.
+Do not add a `Config` field, a default or an `enable_*` setting: a repository enables the rule with a `linters.settings.custom` entry named after the analyzer (plus a `linters.enable` entry when its config sets `linters.default` to `none` or `fast`), and `pername.Register` rejects any settings. See `MAINTENANCE.md`, step 5.
 
 ### 5. Update Documentation
 
@@ -142,7 +142,7 @@ var good = something // No warning
 - [ ] Created `analyzers/{rulename}/analyzer_test.go`
 - [ ] Created `analyzers/{rulename}/testdata/src/{rulename}/{rulename}.go`
 - [ ] Added import to `plugin.go`
-- [ ] Called `RegisterAnalyzer` in `init()` in `plugin.go`
+- [ ] Called `pername.Register` in `init()` in `plugin.go`
 - [ ] Tests pass: `go test ./...`
 - [ ] Added documentation to `README.md`
 - [ ] Updated `CHANGELOG.md`

@@ -11,14 +11,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package attgolinter_test
+package pername_test
 
 import (
 	"errors"
 	"strings"
 	"testing"
 
-	attgolinter "github.com/attestantio/attgo-linter"
+	"github.com/attestantio/attgo-linter/internal/pername"
 	"github.com/golangci/plugin-module-register/register"
 	"golang.org/x/tools/go/analysis"
 )
@@ -32,9 +32,9 @@ func newTestAnalyzer(name string) *analysis.Analyzer {
 	}
 }
 
-func TestRegisterAnalyzer_Plugin(t *testing.T) {
+func TestRegister_Plugin(t *testing.T) {
 	analyzer := newTestAnalyzer("attgo_registered_plugin")
-	attgolinter.RegisterAnalyzer(analyzer)
+	pername.Register(analyzer)
 
 	newPlugin, err := register.GetPlugin("attgo_registered_plugin")
 	if err != nil {
@@ -61,7 +61,7 @@ func TestRegisterAnalyzer_Plugin(t *testing.T) {
 	}
 }
 
-func TestRegisterAnalyzer_Settings(t *testing.T) {
+func TestRegister_Settings(t *testing.T) {
 	tests := []struct {
 		name     string
 		settings any
@@ -85,7 +85,7 @@ func TestRegisterAnalyzer_Settings(t *testing.T) {
 		},
 	}
 
-	attgolinter.RegisterAnalyzer(newTestAnalyzer("attgo_registered_settings"))
+	pername.Register(newTestAnalyzer("attgo_registered_settings"))
 
 	newPlugin, err := register.GetPlugin("attgo_registered_settings")
 	if err != nil {

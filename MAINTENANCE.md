@@ -100,12 +100,13 @@ Add one call to the `init` function in `plugin.go`:
 import (
     // ...
     "github.com/attestantio/attgo-linter/analyzers/newrule"
+    "github.com/attestantio/attgo-linter/internal/pername"
 )
 
 func init() {
     register.Plugin("attgo", New)
 
-    RegisterAnalyzer(newrule.Analyzer)
+    pername.Register(newrule.Analyzer)
 }
 ```
 
@@ -124,7 +125,7 @@ linters:
         description: "What the rule checks"
 ```
 
-The entry takes no `settings`; `RegisterAnalyzer` rejects any. The rule registers from `init` in the root package, which a consumer's attgo-linter entry in `.custom-gcl.yml` already imports, so that file needs no extra entry, only a `version` that includes the rule.
+The entry takes no `settings`; `pername.Register` rejects any. The rule registers from `init` in the root package, which a consumer's attgo-linter entry in `.custom-gcl.yml` already imports, so that file needs no extra entry, only a `version` that includes the rule.
 
 The rule is then suppressed with `//nolint:attgo_new_rule`, which leaves every other linter reporting on that line.
 

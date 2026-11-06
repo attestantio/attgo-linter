@@ -22,13 +22,13 @@ import (
 	"go/token"
 	"strings"
 
-	attgolinter "github.com/attestantio/attgo-linter"
+	"github.com/attestantio/attgo-linter/internal/pername"
 	"golang.org/x/tools/go/analysis"
 )
 
 func init() {
-	attgolinter.RegisterAnalyzer(newAnalyzer("sample_first"))
-	attgolinter.RegisterAnalyzer(newAnalyzer("sample_second"))
+	pername.Register(newAnalyzer("sample_first"))
+	pername.Register(newAnalyzer("sample_second"))
 }
 
 func newAnalyzer(name string) *analysis.Analyzer {
