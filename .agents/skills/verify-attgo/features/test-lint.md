@@ -33,11 +33,11 @@ Preconditions:
   Exit code is 0. Stdout says `0 issues.` The JSON `Issues` list is empty or absent. That matches the baseline (testpackage 0, testifylint 0, thelper 0, usetesting 0). A typecheck issue fails the drive.
 - **Deliberate violation.** Create `foo/foo_test.go` containing `package foo`, an import of `testing`, and `func TestFoo(t *testing.T) {}`. Run the same command with `./foo/` added, JSON path `$EVIDENCE/go-eth2-client-test-violation.json`, and combined output in `$EVIDENCE/go-eth2-client-test-violation.txt`. Exit code is 1. The report has one issue. `FromLinter` is `testpackage`, the file is `foo/foo_test.go`, and `Text` is exactly:
 
-```
-package should be `foo_test` instead of `foo`
-```
+  ```
+  package should be `foo_test` instead of `foo`
+  ```
 
-No other linter reports. Delete `foo/` before any later count.
+  No other linter reports. Delete `foo/` before any later count.
 - **Proof.** The clean report and the violation report are both required. The clean report alone does not show the config can fail.
 
 ## Gotchas

@@ -16,7 +16,7 @@ One run of the attgo plugin reports every enabled rule under `FromLinter` `attgo
 
 Preconditions:
 
-- Doctor passed, including a successful `git diff origin/master...HEAD`.
+- Doctor passed, including `git symbolic-ref refs/remotes/origin/HEAD` printing `refs/remotes/origin/master` and a successful `git diff origin/master...HEAD`.
 - The clone is a clean pin. `verifyattgo/` and `foo/` are absent. A count that includes scaffolding is invalid.
 - `GOTOOLCHAIN=go1.26.10`.
 
@@ -36,7 +36,8 @@ Preconditions:
 ## Gotchas
 
 - The default cap of 3 identical texts would report 3 `attgo_capital_comment` findings on the vouch pin, not 9. The flags above are part of the command.
-- `attgo_current_year` on a clean vouch pin is 0 because the diff against `origin/master` is empty. On the go-eth2-client pin the diff has no production Go files, so that 0 is the same kind of result. A shallow clone, or a diff that fails, checks every file and will not match this baseline.
+- `attgo_current_year` is 0 when the diff has no production Go file, including an empty diff. See the index. A shallow clone, a failed diff, or a saved line `attgo_current_year: warning` is not this baseline.
 - `--enable-only=attgo` keeps the consumer's attgo settings. It does not turn on rules that consumer sets false. The index marks those rules `off`. Do not record them as 0.
 - A cached `custom-gcl` from a consumer workflow is the wrong binary. See SKILL.md Gotchas. Doctor's `(devel)` replace path is the check.
-- A run whose working directory is not the clone can exit 7 and print `0 issues`. That matches no baseline.
+- A run whose working directory is not the clone can exit 5 or 7 and match no baseline. See SKILL.md.
+- `GOLANGCI_LINT_CACHE` is the run cache from Launch. A replay is not a count. See SKILL.md Gotchas.
