@@ -4,6 +4,7 @@
 
 ### Added
 
+- `verify-attgo` skill: builds a custom binary from this checkout inside pinned vouch and go-eth2-client clones and checks registration, nolint, exit codes, the test config, and finding counts.
 - A rule can register as a golangci-lint plugin of its own, named after its analyzer. A repository enables it with a `linters.settings.custom` entry of that name, with no `settings` (plus a `linters.enable` entry when it sets `linters.default` to `none` or `fast`), and suppresses it with `//nolint:<name>`, which leaves every other linter reporting. The existing rules stay in the `attgo` plugin, and existing `attgo` configurations need no change.
 
 ### Fixed
