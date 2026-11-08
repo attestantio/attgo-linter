@@ -58,6 +58,8 @@ Run tests:
 go test ./...
 ```
 
+Then run verify-attgo (`.agents/skills/verify-attgo`) on the per-name registration feature. Drive the new rule with its own `linters.settings.custom` entry, and do not pass `--enable-only=attgo`. That flag hides a linter registered under its own name.
+
 ## Template: analyzer.go
 
 ```go
@@ -144,5 +146,6 @@ var good = something // No warning
 - [ ] Added import to `plugin.go`
 - [ ] Called `pername.Register` in `init()` in `plugin.go`
 - [ ] Tests pass: `go test ./...`
+- [ ] verify-attgo per-name feature passes for the new rule, without `--enable-only=attgo`
 - [ ] Added documentation to `README.md`
 - [ ] Updated `CHANGELOG.md`
